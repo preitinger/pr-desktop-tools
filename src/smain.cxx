@@ -36,14 +36,6 @@ void setMainMenu(void *data)
     window->clear();
     window->begin();
 
-    Fl_Button *button = new DbgButton(0, 0, 400, 20, "Count-Down");
-    FL_INLINE_CALLBACK_2(button, Fl_Window *, window, window, OnFinish, onFinish, onFinish, {
-        new CountDown(window, onFinish); // deleted sich selbst und ruft im Destructor den onFinish-Callback auf, falls er gesetzt ist.
-    });
-    // button = new DbgButton(0, 20, 400, 20, "Track Mouse Position");
-    // FL_INLINE_CALLBACK_2(button, Fl_Window *, window, window, OnFinish, onFinish, onFinish, {
-    //     new TrackMouse(window, onFinish);
-    // });
     int y = 0;
     addActivity<CountDown>(window, onFinish, y, "Count-Down");
     addActivity<TrackMouse>(window, onFinish, y, "Track Mouse Position");

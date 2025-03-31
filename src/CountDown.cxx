@@ -66,16 +66,6 @@ CountDown::~CountDown()
     }
 }
 
-// static void onCountDownTimeout(void *data)
-// {
-//     CB_CAST(CountDown, countDown);
-//     bool done = countDown->onTimeout();
-//     if (done) {
-//         delete countDown;
-//     } else {
-//     }
-// }
-
 void CountDown::start()
 {
     // std::cout << "CountDown::start()\n";
