@@ -22,7 +22,6 @@ find_package(FLTK REQUIRED CONFIG)
 
 add_executable(pr-desktop-tools
     src/smain.cxx
-    src/SActivity.cxx
     src/CountDown.cxx
     src/TrackMouse.cxx
     src/Stocks.cxx
@@ -36,11 +35,4 @@ target_link_libraries(pr-desktop-tools fltk fltk_gl fltk_images)
 include(CTest)
 enable_testing()
 
-add_executable(_test_SButtonAccess
-    src/_test_SButtonAccess.cxx
-    src/Button.cxx
-    src/SButtonAccess.cxx
-)
-target_include_directories(_test_SButtonAccess PRIVATE ${FLTK_INCLUDE_DIRS})
-target_link_libraries(_test_SButtonAccess fltk fltk_gl fltk_images)
 
