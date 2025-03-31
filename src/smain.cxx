@@ -14,8 +14,6 @@
 #include <iostream>
 #include <functional>
 
-// void setupCountDown(Fl_Widget *w, void *data);
-
 template <class Activity>
 void addActivity(Fl_Window* window, const OnFinish& onFinish, int& Y, const char* L)
 {
@@ -31,6 +29,7 @@ void setMainMenu(void *data)
 {
     CB_CAST(Fl_Window, window);
 
+    // Nach jeder Activity wieder das Hauptmenu setzen.
     OnFinish onFinish = std::bind(setMainMenu, window);
 
     window->clear();
@@ -44,12 +43,6 @@ void setMainMenu(void *data)
     window->end();
     window->redraw();
 }
-
-// void setupCountDown(Fl_Widget *w, void *data)
-// {
-//     CB_CAST(Fl_Window, window);
-//     new CountDown(window, std::bind(setMainMenu, window));
-// }
 
 int main()
 {
