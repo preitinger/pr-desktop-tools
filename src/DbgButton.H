@@ -13,7 +13,7 @@ public:
     }
     virtual ~DbgButton()
     {
-        std::cout << "~DbgButton()\n";
+        //std::cout << "~DbgButton()\n";
     }
 };
 

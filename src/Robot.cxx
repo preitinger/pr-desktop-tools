@@ -49,7 +49,7 @@ namespace awt
         event.xbutton.button = buttons;
         event.xbutton.same_screen = True;
         int res = XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
-        std::cout << "res of XQueryPointer " << res << "\n";
+        //std::cout << "res of XQueryPointer " << res << "\n";
 
         event.xbutton.subwindow = event.xbutton.window;
 
@@ -58,11 +58,11 @@ namespace awt
             event.xbutton.window = event.xbutton.subwindow;
 
             res = XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
-            std::cout << "res of XQueryPointer " << res << "\n";
+            //std::cout << "res of XQueryPointer " << res << "\n";
         }
 
         res = XSendEvent(display, PointerWindow, True, 0xfff, &event);
-        std::cout << "res of send press " << res << "\n";
+        //std::cout << "res of send press " << res << "\n";
     }
 
     void Robot::mouseRelease(uint_fast32_t buttons)
@@ -73,7 +73,7 @@ namespace awt
         event.xbutton.same_screen = True;
 
         int res = XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
-        std::cout << "res of XQueryPointer " << res << "\n";
+        //std::cout << "res of XQueryPointer " << res << "\n";
 
         event.xbutton.subwindow = event.xbutton.window;
 
@@ -82,13 +82,13 @@ namespace awt
             event.xbutton.window = event.xbutton.subwindow;
 
             res = XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
-            std::cout << "res of XQueryPointer " << res << "\n";
+            //std::cout << "res of XQueryPointer " << res << "\n";
         }
 
         event.xbutton.type = ButtonRelease;
 
         res = XSendEvent(display, PointerWindow, True, 0xfff, &event);
-        std::cout << "res of send release " << res << "\n";
+        //std::cout << "res of send release " << res << "\n";
     }
 
     void Robot::mousePoint(int_fast32_t *x_return, int_fast32_t *y_return)
@@ -116,14 +116,14 @@ namespace awt
             {
                 c.pixel = XGetPixel(image, x1, y1);
                 XQueryColor(d, XDefaultColormap(d, XDefaultScreen(d)), &c);
-                std::cout << c.red / 256 << " " << c.green / 256 << " " << c.blue / 256 << "     ";
+                //std::cout << c.red / 256 << " " << c.green / 256 << " " << c.blue / 256 << "     ";
 
                 if (rgb_return)
                 {
                     *rgb_return = (((uint_fast32_t)c.red >> 8) << 16) | (((uint_fast32_t)c.green >> 8) << 8) | (c.blue >> 8);
                 }
             }
-            std::cout << std::endl;
+            //std::cout << std::endl;
         }
 
         XFree(image);
@@ -163,11 +163,11 @@ namespace awt
             {
                 c.pixel = XGetPixel(image, x1, y1);
                 XQueryColor(d, XDefaultColormap(d, XDefaultScreen(d)), &c);
-                std::cout << c.red / 256 << " " << c.green / 256 << " " << c.blue / 256 << "     ";
+                //std::cout << c.red / 256 << " " << c.green / 256 << " " << c.blue / 256 << "     ";
                 fl_color(c.red / 256, c.green / 256, c.blue / 256);
                 fl_point(x1, y1);
             }
-            std::cout << std::endl;
+            //std::cout << std::endl;
         }
 
         XFree(image);

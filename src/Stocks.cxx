@@ -8,7 +8,7 @@
 static void cbOnTimeout(void *data)
 {
     CB_CAST(Stocks, stocks);
-    std::cout << "cbOnTimeout for Stocks\n";
+    //std::cout << "cbOnTimeout for Stocks\n";
     stocks->onTimeout();
 }
 
@@ -54,7 +54,7 @@ Stocks::~Stocks()
 
 void Stocks::onTimeout()
 {
-    std::cout << "Stocks::onTimeout " << (coordsToClick.end() - nextCoords) / 2 << " remaining - state " << clickState << "\n";
+    //std::cout << "Stocks::onTimeout " << (coordsToClick.end() - nextCoords) / 2 << " remaining - state " << clickState << "\n";
     if (coordsToClick.end() - nextCoords < 2)
     {
         delete this;
@@ -63,7 +63,7 @@ void Stocks::onTimeout()
     int x = nextCoords[0];
     int y = nextCoords[1];
 
-    std::cout << "x " << x << " y " << y << "\n";
+    //std::cout << "x " << x << " y " << y << "\n";
     switch (clickState)
     {
     case ClickState::MOVE:

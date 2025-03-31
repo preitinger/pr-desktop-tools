@@ -12,7 +12,7 @@ namespace awt
 
     template<class T>
     static void dump(const char* label, T val) {
-        std::cout << label << "  " << val << std::endl;
+        //std::cout << label << "  " << val << std::endl;
     }
 
     class Robot

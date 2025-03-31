@@ -45,7 +45,7 @@ CountDown::CountDown(Fl_Window* window, const OnFinish &onFinish)
 
 CountDown::~CountDown()
 {
-    std::cout << "~CountDown\n";
+    // std::cout << "~CountDown\n";
     Fl::remove_timeout(cbOnTimeout, this);
 
     delete output;
@@ -78,7 +78,7 @@ CountDown::~CountDown()
 
 void CountDown::start()
 {
-    std::cout << "CountDown::start()\n";
+    // std::cout << "CountDown::start()\n";
     rest = countInput->ivalue();
     step = stepInput->dvalue();
 
@@ -89,7 +89,7 @@ void CountDown::start()
 
     window->begin();
     output = new Fl_Output(200, 0, 100, 20, "Count");
-    std::cout << "rest " << rest << "\n";
+    // std::cout << "rest " << rest << "\n";
     output->value(rest);
     window->end();
     window->redraw();
@@ -99,7 +99,7 @@ void CountDown::start()
 
 void CountDown::onTimeout()
 {
-    std::cout << "onTimeout " << rest << "\n";
+    //std::cout << "onTimeout " << rest << "\n";
     if (--rest <= 0)
     {
         delete this;
@@ -113,7 +113,7 @@ void CountDown::onTimeout()
 
 void CountDown::cancel()
 {
-    std::cout << "CountDown::cancel\n";
+    //std::cout << "CountDown::cancel\n";
     delete this;
 }
 

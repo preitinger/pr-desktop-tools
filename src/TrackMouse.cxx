@@ -35,7 +35,7 @@ TrackMouse::TrackMouse(Fl_Window* window, const OnFinish &onFinish)
 
 TrackMouse::~TrackMouse()
 {
-    std::cout << "~TrackMouse\n";
+    //std::cout << "~TrackMouse\n";
     Fl::remove_timeout(cbOnTimeout, this);
     delete output;
     output = nullptr;
