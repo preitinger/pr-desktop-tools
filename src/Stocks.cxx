@@ -42,6 +42,7 @@ Stocks::~Stocks()
 {
     Fl::remove_timeout(cbOnTimeout, this);
     delete robot;
+    robot = nullptr;
     XCloseDisplay(display);
     display = nullptr;
 
