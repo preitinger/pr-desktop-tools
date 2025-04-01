@@ -26,6 +26,7 @@ add_executable(pr-desktop-tools
     src/TrackMouse.cxx
     src/Stocks.cxx
     src/Robot.cxx
+    src/TestWidgetAccess.cxx
 )
 
 target_include_directories(pr-desktop-tools PRIVATE ${FLTK_INCLUDE_DIRS})

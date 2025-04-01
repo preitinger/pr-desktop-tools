@@ -1,6 +1,7 @@
 #include "CountDown.H"
 #include "TrackMouse.H"
 #include "Stocks.H"
+#include "TestWidgetAccess.H"
 #include "Macros.H"
 #include "DbgButton.H"
 
@@ -39,6 +40,7 @@ void setMainMenu(void *data)
     addActivity<CountDown>(window, onFinish, y, "Count-Down");
     addActivity<TrackMouse>(window, onFinish, y, "Track Mouse Position");
     addActivity<Stocks>(window, onFinish, y, "Stocks");
+    addActivity<TestWidgetAccess>(window, onFinish, y, "TestWidgetAccess");
 
     window->end();
     window->redraw();
