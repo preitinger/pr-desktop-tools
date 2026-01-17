@@ -10,17 +10,22 @@
 
 #include <memory>
 
+
 template <class Widget>
 class WidgetAccess;
 
 template <class Widget>
 using WidgetAccessSP = std::shared_ptr<WidgetAccess<Widget>>;
+template <class Widget>
+using WidgetAccessWP = std::weak_ptr<WidgetAccess<Widget>>;
 
 template <class Widget>
-class WidgetAccess
+class WidgetAccess : public std::enable_shared_from_this<WidgetAccess<Widget>>
 {
 public:
     static WidgetAccessSP<Widget> create(int X, int Y, int W, int H, const char* L = nullptr);
+    template <class Widget2>
+    WidgetAccessSP<Widget2> convert();
     virtual Widget* get() = 0;
 };
 

@@ -1,0 +1,19 @@
+import { type DataIn, type DataOut, type Mixed, type MixedA, type MixedB } from ./bin-io-types;
+
+export function genWriteMixed_Variant<T>(writeT: (dout: DataOut, x: T) => void) {
+    return function(dout: DataOut, x: Mixed<T>) {
+        switch (x) {
+            case 'a':
+                // do nothing, here; Only in the main write function, the tag is written for this case.
+                break;
+            case 'b':
+                // do nothing, here; Only in the main write function, the tag is written for this case.
+                break;
+            default:
+        } // switch
+
+export function genWriteMixedA_Variant<T>(writeT: (dout: DataOut, x: T) => void) {
+    return function(dout: DataOut, x: MixedA<T>) {
+
+export function genWriteMixedB_Variant<T>(writeT: (dout: DataOut, x: T) => void) {
+    return function(dout: DataOut, x: MixedB<T>) {

@@ -3,7 +3,7 @@
         {
             "type": "cppbuild",
             "label": "C/C++: g++ Aktive Datei kompilieren",
-            "command": "/usr/bin/g++",
+            "command": "/usr/local/bin/g++",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
@@ -50,7 +50,62 @@
                 "showReuseMessage": true,
                 "clear": true
             }
+        },
+        {
+            "label": "testTask",
+            "type": "shell",
+            // "command": "${input:runOpen}",
+            // "command": "${input:runSendSequence}",
+            // "command": "${input:runQuickOpen}",
+            "command": "workbench.action.quickOpen",
+            // "command": "runCommands",
+            // "args": {
+            //     "commands": [
+            //         {
+            //             "command": "workbench.action.terminal.sendSequence",
+            //             "args": {
+            //                 "text": "bla"
+            //             }
+            //         }
+            //     ]
+            // }
+            "problemMatcher": [],
         }
+    ],
+    "inputs": [
+        {
+            "id": "fileToOpen",
+            "type": "promptString",
+            "description": "Name of the state to create"
+        },
+        {
+            "id": "runOpen",
+            "type": "command",
+            "command": "vscode.open",
+            "args": {
+                "uri": "/home/peter/my_projects/individual-gits/pr-desktop-tools/src/pr-newsletter/incVersions.cxx"
+            }
+        },
+        {
+            "id": "runQuickOpen",
+            "type": "command",
+            "command": "workbench.action.quickOpen",
+            "args": "${input:fileToOpen}"
+        },
+        {
+            "id": "runSendSequence",
+            "type": "command",
+            "command": "runCommands",
+            "args": {
+                "commands": [
+                    {
+                        "command": "workbench.action.quickOpen",
+                        "args": "${input:fileToOpen}"
+                    }
+                    
+                ]
+            }
+        },
     ],
     "version": "2.0.0"
 }

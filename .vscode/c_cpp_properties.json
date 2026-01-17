@@ -4,14 +4,20 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/home/peter/fltk",
-                "/home/peter/fltk/build"
+                "/usr/local/include/mongocxx/v_noabi",
+                "/usr/local/include",
+                "/usr/local/include/bsoncxx/v_noabi",
+                "/usr/local/include"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/clang-14",
-            "cStandard": "c17",
-            "cppStandard": "c++14",
-            "intelliSenseMode": "linux-clang-x64"
+            "compilerPath": "/usr/local/bin/g++",
+            "cStandard": "c23",
+            "cppStandard": "c++23",
+            "intelliSenseMode": "linux-clang-x64",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "compileCommands": [
+                "${workspaceFolder}/build/compile_commands.json"
+            ]
         }
     ],
     "version": 4

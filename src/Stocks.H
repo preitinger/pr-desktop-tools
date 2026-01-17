@@ -8,30 +8,6 @@
 
 class Fl_Window;
 
-enum class ClickState
-{
-    MOVE,
-    PRESS,
-    RELEASE,
-};
-
-inline std::ostream &operator<<(std::ostream &o, const ClickState &s)
-{
-    switch (s)
-    {
-    case ClickState::MOVE:
-        o << "MOVE";
-        break;
-    case ClickState::PRESS:
-        o << "PRESS";
-        break;
-    case ClickState::RELEASE:
-        o << "RELEASE";
-        break;
-    }
-    return o;
-}
-
 class Stocks
 {
 public:

@@ -1,6 +1,6 @@
 #include <memory>
 
-#define SCLASS(className) class className; typedef std::shared_ptr<className> className##SP; typedef std::weak_ptr<className> className##WP; class className
+#define SCLASS(className) class className; typedef std::shared_ptr<className> className##SP; typedef std::weak_ptr<className> className##WP; typedef std::unique_ptr<className> className##UP; class className
 
 #define CB_CAST(type, var) type* var = (type*) data
 

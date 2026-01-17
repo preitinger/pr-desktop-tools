@@ -1,0 +1,89 @@
+{
+    "_id": {
+        "_data": "82681DD1A00000001E2B042C0100296E5A10042EE385F067EB4C49954E46457246558D463C6F7065726174696F6E54797065003C7570646174650046646F63756D656E744B65790046645F69640064681D930D3268A28361E6CCC7000004"
+    },
+    "operationType": "update",
+    "clusterTime": {
+        "$timestamp": {
+            "t": 1746784672,
+            "i": 30
+        }
+    },
+    "wallTime": {
+        "$date": 1746784672435
+    },
+    "ns": {
+        "db": "pr-push-me_dev",
+        "coll": "users"
+    },
+    "documentKey": {
+        "_id": {
+            "$oid": "681d930d3268a28361e6ccc7"
+        }
+    },
+    "updateDescription": {
+        "updatedFields": {
+            "dataExt.pushers": [
+                {
+                    "name": {
+                        "type": "split",
+                        "prename": "Manfred",
+                        "surname": "Filipiak"
+                    },
+                    "key": "0.7078964597135915"
+                },
+                {
+                    "name": {
+                        "type": "split",
+                        "prename": "Peter",
+                        "surname": "Hotmail"
+                    },
+                    "key": "0.9857853834831254"
+                },
+                {
+                    "name": {
+                        "type": "split",
+                        "prename": "Stefan",
+                        "surname": "Jungklaus"
+                    },
+                    "key": "0.8762628162885681"
+                },
+                {
+                    "name": {
+                        "type": "split",
+                        "prename": "Viktoria",
+                        "surname": "Kuchynka"
+                    },
+                    "key": "0.8556617564246548"
+                },
+                {
+                    "name": {
+                        "type": "split",
+                        "prename": "Matthias",
+                        "surname": "Reitinger"
+                    },
+                    "key": "0.6647570803150993"
+                },
+                {
+                    "name": {
+                        "type": "split",
+                        "prename": "Josef",
+                        "surname": "Wanninger"
+                    },
+                    "key": "0.008843899219701301"
+                },
+                {
+                    "name": {
+                        "type": "split",
+                        "prename": "Markus",
+                        "surname": "Weichselmann"
+                    },
+                    "key": "0.7370337038087268"
+                }
+            ]
+        },
+        "removedFields": [],
+        "truncatedArrays": []
+    },
+    "updatesPushes": false
+}

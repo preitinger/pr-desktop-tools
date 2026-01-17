@@ -53,6 +53,24 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "semaphore": "cpp",
-        "condition_variable": "cpp"
-    }
+        "condition_variable": "cpp",
+        "mutex": "cpp",
+        "list": "cpp",
+        "codecvt": "cpp",
+        "csignal": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "sstream": "cpp"
+    },
+    "C_Cpp.formatting": "vcFormat",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.cppStandard": "c++23",
+    "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
+    "C_Cpp.default.compilerPath": "/usr/local/bin/g++",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/**",
+        "/usr/local/include/c++/14.3.0",
+        "/usr/local/include/c++/14.3.0/x86_64-pc-linux-gnu",
+        "/usr/local/lib/gcc/x86_64-pc-linux-gnu/14.3.0/include"
+    ],
 }

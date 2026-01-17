@@ -1,0 +1,44 @@
+// BEGIN IO TYPES
+
+interface MixedA<T> {
+    type: 'a';
+    a: U8;
+}
+
+type MixedB<T> = {
+    type: 'b';
+    b: U8;
+    mixedA: MixedA<T>;
+} | {
+    type: 'c';
+}
+
+type Mixed<T> = 'a' | 'b' | MixedA<T> | MixedB<T>;
+
+type MixedInst = Mixed<Utf>
+
+type MixedInst2 = Mixed<Mixed<Utf>>
+
+type Simple<T> = {
+    type: 'a';
+    x: U8;
+    t: T;
+} | {
+    type: 'b';
+    error: Utf;
+}
+
+type Simple2 = {
+    type: 'a2';
+    simple2: U8;
+} | {
+    type: 'b2';
+    simple2: U32;
+}
+
+type MySynonym = Simple<Simple<U8>> | Simple2
+
+type MySimpleSynonym = Simple<U8> | Simple2
+
+type OneLiteral = 'oneLiteral';
+type OneSynonym = MySynonym
