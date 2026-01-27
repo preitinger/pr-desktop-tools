@@ -1,0 +1,46 @@
+#include "Output.H"
+
+#include <cassert>
+
+Indent::Indent()
+    : s()
+{
+}
+void Indent::inc()
+{
+    s += "    ";
+}
+
+void Indent::dec()
+{
+    assert(s.length() >= 4);
+    s = s.substr(0, s.length() - 4);
+}
+
+std::ostream &operator<<(std::ostream &out, const Indent &indent)
+{
+    return out << indent.s;
+}
+
+void Indent::sub(const std::function<void(/* Indent& */)>& f) {
+    inc();
+    f(/* *this */);
+    dec();
+}
+
+std::string Indent::toString() const {
+    return s;
+}
+
+Output::Output(Out& out)
+    : out(out)
+{
+}
+
+Output::~Output()
+{
+}
+
+void Output::sub(const std::function<void()>& f) {
+    indent.sub(f);
+}

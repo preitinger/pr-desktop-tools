@@ -24,7 +24,7 @@ void ExampleAction::start()
     int gx = group->get()->x();
     int gy = group->get()->y();
     int gw = group->get()->w();
-    int gh = group->get()->h();
+    // int gh = group->get()->h();
     exitB = button(gx + 10, gy + 10, gw - 20, 20, "Exit Example Action", &ExampleAction::exit);
     enableDisableB = button(gx + 10, gy + 30, gw - 20, 20, "Enable Action", &ExampleAction::enableAction);
     numActionsO = WidgetAccess<Fl_Output>::create(200, gy + 70, gw - 200 - 10, 20, "# Actions");
@@ -49,7 +49,7 @@ void ExampleAction::enableAction()
         int gx = group->get()->x();
         int gy = group->get()->y();
         int gw = group->get()->w();
-        int gh = group->get()->h();
+        // int gh = group->get()->h();
         actionB = button(gx + 10, gy + 50, gw - 20, 20, "Do Action", &ExampleAction::doAction);
         w->end();
         w->redraw();

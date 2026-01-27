@@ -113,7 +113,7 @@ Callback<Widget>::~Callback()
 }
 
 template <class Widget>
-void genericCb(Fl_Widget *w, void *data)
+void genericCb(Fl_Widget *, void *data)
 {
     CB_CAST(Callback<Widget>, cb);
     cb->run();

@@ -46,7 +46,7 @@ void GenActionCodeAction::start() /* override final */
         y += 10;
 
         cancelB = button(x, y, w, h, "Cancel", &GenActionCodeAction::onCancel);
-        typedef void (GenActionCodeAction::*MyMethodPtr)();
+        // typedef void (GenActionCodeAction::*MyMethodPtr)();
         nameInput = widget<GenActionCodeAction, Fl_Input>(x + 100, y += lh, w - 100, h, "Klassenname", &GenActionCodeAction::onInput);
         nameInput->get()->when(FL_WHEN_ENTER_KEY | FL_WHEN_NOT_CHANGED);
         innerGroup->get()->end();

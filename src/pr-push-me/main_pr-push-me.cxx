@@ -178,7 +178,7 @@ Pushes detectPushes()
             pushingKeys.push_back(push.get_string().value);
         }
 
-        for (auto pusher : pushers.get_array().value)
+        for (auto pusher : pushersArray)
         {
             auto pusherDoc = pusher.get_document().value;
             if (std::find(pushingKeys.begin(), pushingKeys.end(), pusherDoc["key"].get_string()) != pushingKeys.end())
@@ -259,7 +259,7 @@ Pushes detectPushes(const S &userId, Col &colUsers)
         pushes.push_back(Push(pushDoc["key"].get_string(), pushDoc["timestamp"].get_double()));
     }
 
-    for (auto pusher : pushers.get_array().value)
+    for (auto pusher : pushersArray)
     {
         auto pusherDoc = pusher.get_document().value;
         auto foundPush = std::find_if(pushes.begin(), pushes.end(), [pusherDoc](auto const &o)
@@ -419,7 +419,7 @@ public:
     Fl_Button *button;
 };
 
-void removePushCb(Fl_Widget *w, void *arg)
+void removePushCb(Fl_Widget *, void *arg)
 {
     const RemovePushCb *cb = (const RemovePushCb *)arg;
     cb->run();
@@ -443,7 +443,7 @@ void cbHideTimeout(void *data)
     w->hide();
 }
 
-void cbClose(Fl_Widget *w, void *data)
+void cbClose(Fl_Widget *, void *data)
 {
     std::cout << "cbClose\n";
     Fl_Window *window = (Fl_Window *)data;
@@ -451,7 +451,7 @@ void cbClose(Fl_Widget *w, void *data)
     Fl::add_timeout(0.1, cbHideTimeout, window);
 }
 
-void cbAudioOff(Fl_Widget *w)
+void cbAudioOff(Fl_Widget *)
 {
     if (rhythmboxPid > 0)
     {
@@ -486,9 +486,10 @@ void presentPushes(const S &userId, Col &usersCol, const Pushes &pushes)
     }
     std::vector<Fl_Button *> buttons;
     int y = 0;
-    for (y = 0; y < pushes.size(); ++y)
+    int pushesSize = (int) pushes.size();
+    for (y = 0; y < pushesSize; ++y)
     {
-        const auto &push = pushes[y];
+        // const auto &push = pushes[y];
         const auto &label = buttonLabels[y];
         Fl_Button *b = new Fl_Button(20, 20 + y * 70, 360, 50, label.c_str());
         buttons.push_back(b);
@@ -516,7 +517,7 @@ void presentPushes(const S &userId, Col &usersCol, const Pushes &pushes)
         {
             // child process
             std::cout << "in child process: current path " << std::filesystem::current_path() << "\n";
-            int res = execl("/usr/bin/rhythmbox", "rhythmbox", "/home/peter/my_projects/individual-gits/pr-desktop-tools/onNudge.mp3", (char *)NULL);
+            /* int res = */ execl("/usr/bin/rhythmbox", "rhythmbox", "/home/peter/my_projects/individual-gits/pr-desktop-tools/onNudge.mp3", (char *)NULL);
             perror("Could not play rhythmbox");
             exit(1);
         }

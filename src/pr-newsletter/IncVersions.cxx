@@ -72,7 +72,7 @@ namespace prNewsletter
             y += 10;
 
             cancelB = button(x, y, w, h, "Cancel", &IncVersions::onCancel);
-            typedef void (IncVersions::*MyMethodPtr)();
+            // typedef void (IncVersions::*MyMethodPtr)();
             folderInput = widget<IncVersions, Fl_Input>(x + 100, y += lh, w - 100, h, "Projektverzeichnis", nullptr);
             search = button(x + 100, y += h, 100, h, "Durchsuchen...", &IncVersions::onSearch);
             runOrStop = button(x + 100, y += lh, 100, h, "Run", &IncVersions::onRunOrStop);
@@ -174,7 +174,7 @@ namespace prNewsletter
     {
         auto prefixSize = prefix.size();
         auto size = s.size();
-        return (s.compare(0, prefixSize, prefix) == 0);
+        return size >= prefixSize && (s.compare(0, prefixSize, prefix) == 0);
     }
 
     template <class F>
@@ -200,7 +200,6 @@ namespace prNewsletter
             std::cout << "line: " << line << "\n";
             if (strStartsWith(line, prefix))
             {
-                auto pos = prefix.size();
                 auto lineSize = line.size();
                 for (auto pos = prefix.size(); pos < lineSize; ++pos)
                 {

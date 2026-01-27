@@ -47,7 +47,7 @@ void BlaBlubb::start() /* override final */
         y += 10;
 
         cancelB = button(x, y, w, h, "Cancel", &BlaBlubb::onCancel);
-        typedef void (BlaBlubb::*MyMethodPtr)();
+        // typedef void (BlaBlubb::*MyMethodPtr)();
         nameInput = widget<BlaBlubb, Fl_Input>(x + 100, y += lh, w - 100, h, "Klassenname", &BlaBlubb::onInput);
         nameInput->get()->when(FL_WHEN_ENTER_KEY | FL_WHEN_NOT_CHANGED);
         innerGroup->get()->end();

@@ -47,7 +47,7 @@ void TestClass::start() /* override final */
         y += 10;
 
         cancelB = button(x, y, w, h, "Cancel", &TestClass::onCancel);
-        typedef void (TestClass::*MyMethodPtr)();
+        // typedef void (TestClass::*MyMethodPtr)();
         nameInput = widget<TestClass, Fl_Input>(x + 100, y += lh, w - 100, h, "Klassenname", &TestClass::onInput);
         nameInput->get()->when(FL_WHEN_ENTER_KEY | FL_WHEN_NOT_CHANGED);
         innerGroup->get()->end();

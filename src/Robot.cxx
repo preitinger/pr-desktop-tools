@@ -48,7 +48,7 @@ namespace awt
         event.type = ButtonPress;
         event.xbutton.button = buttons;
         event.xbutton.same_screen = True;
-        int res = XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+        /* int res = */ XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
         //std::cout << "res of XQueryPointer " << res << "\n";
 
         event.xbutton.subwindow = event.xbutton.window;
@@ -57,11 +57,11 @@ namespace awt
         {
             event.xbutton.window = event.xbutton.subwindow;
 
-            res = XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+            /* res = */ XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
             //std::cout << "res of XQueryPointer " << res << "\n";
         }
 
-        res = XSendEvent(display, PointerWindow, True, 0xfff, &event);
+        /* res = */ XSendEvent(display, PointerWindow, True, 0xfff, &event);
         //std::cout << "res of send press " << res << "\n";
     }
 
@@ -72,7 +72,7 @@ namespace awt
         event.xbutton.button = buttons;
         event.xbutton.same_screen = True;
 
-        int res = XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+        /* int res = */ XQueryPointer(display, RootWindow(display, DefaultScreen(display)), &event.xbutton.root, &event.xbutton.window, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
         //std::cout << "res of XQueryPointer " << res << "\n";
 
         event.xbutton.subwindow = event.xbutton.window;
@@ -81,13 +81,13 @@ namespace awt
         {
             event.xbutton.window = event.xbutton.subwindow;
 
-            res = XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
+            /* res = */ XQueryPointer(display, event.xbutton.window, &event.xbutton.root, &event.xbutton.subwindow, &event.xbutton.x_root, &event.xbutton.y_root, &event.xbutton.x, &event.xbutton.y, &event.xbutton.state);
             //std::cout << "res of XQueryPointer " << res << "\n";
         }
 
         event.xbutton.type = ButtonRelease;
 
-        res = XSendEvent(display, PointerWindow, True, 0xfff, &event);
+        /* res = */ XSendEvent(display, PointerWindow, True, 0xfff, &event);
         //std::cout << "res of send release " << res << "\n";
     }
 

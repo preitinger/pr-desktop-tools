@@ -13,6 +13,7 @@ public:
     void dec();
 
     void sub(const std::function<void(/* Indent& */)>& f);
+    std::string toString() const;
 
 private:
     std::string s;

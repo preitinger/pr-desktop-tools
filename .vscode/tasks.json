@@ -27,7 +27,14 @@
             "label": "build",
             "type": "shell",
             "command": "sh ${workspaceFolder}/mk.sh",
-            "problemMatcher": [],
+            "problemMatcher": {
+                "base": "$gcc",
+                "fileLocation": "absolute"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "presentation": {
                 "echo": true,
                 "reveal": "never",
@@ -102,7 +109,6 @@
                         "command": "workbench.action.quickOpen",
                         "args": "${input:fileToOpen}"
                     }
-                    
                 ]
             }
         },

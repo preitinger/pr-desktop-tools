@@ -26,3 +26,7 @@ void Indent::sub(const std::function<void(/* Indent& */)>& f) {
     f(/* *this */);
     dec();
 }
+
+std::string Indent::toString() const {
+    return s;
+}

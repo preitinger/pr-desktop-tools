@@ -1,10 +1,19 @@
-import { readU32, readU8, readUtf, writeU32, writeU8, writeUtf, type DataIn, type DataOut, type Mixed, type MixedA, type MixedB, type MixedInst, type MixedInst2, type MySimpleSynonym, type MySynonym, type OneLiteral, type OneSynonym, type Simple, type Simple2 } from "./bin-io-types";
+import { readU32, readU8, readUtf, writeU32, writeU8, writeUtf, type DataIn, type DataOut, type Mixed, type MixedA, type MixedB, type MixedInst, type MixedInst2, type MySimpleSynonym, type MySynonym, type OneLiteral, type OneSynonym, type Reader, type Simple, type Simple2, type U8, type Writer } from "./bin-io-types";
+
+type Bla = 'x'[];
+
+const bla: Bla = ['x', 'x'];
+type Blubb<T> = T;
+
+const blubb: Blubb<Bla> = ['x']
+
+interface MyInt<T> {
+    t: T;
+}
 
 export function genWriteMixedA_Variant<T>(writeT: Writer<T>) {
-    return function(dout: DataOut, x: MixedA<T>) {
+    return function (dout: DataOut, x: MixedA<T>) {
 
-        // [in genAWriteVariant1]
-        // !!! Hier genWrite aufgerufen.
         writeU8(dout, x.a);
     }
 }
@@ -17,36 +26,39 @@ export function genReadMixedA_Variant<T>(readT: Reader<T>) {
             a: readU8(din),
         };
     }
-} // function genReadMixedA_Variant
+}
 
 export function genWriteMixedA<T>(writeT: Writer<T>) {
-    return function(dout: DataOut, x: MixedA<T>) {
+    return function (dout: DataOut, x: MixedA<T>) {
         genWriteMixedA_Variant(writeT)(dout, x);
     }
-} // Ende genWrite...
+}
 
 export function genReadMixedA<T>(readT: Reader<T>) {
     return function (din: DataIn): MixedA<T> {
         return genReadMixedA_Variant(readT)(din);
+    }
 }
-} // genReadMixedA
+
+
+// genRndObj:
+const rndMixedA = [
+    {
+        type:         /* RandomAttributeTypeValGen nyi */,
+        a:         /* RandomAttributeTypeValGen nyi */,
+    },
+]
 
 export function genWriteMixedB_Variant<T>(writeT: Writer<T>) {
-    return function(dout: DataOut, x: MixedB<T>) {
+    return function (dout: DataOut, x: MixedB<T>) {
         const write0 = genWriteMixedA(writeT);
 
         switch (x.type) {
             case 'b':
-                // origin: 0x4b49e0 255 'b'
-                // [in genAWriteVariant1]
-                // !!! Hier genWrite aufgerufen.
                 writeU8(dout, x.b);
                 write0(dout, x.mixedA);
                 break;
             case 'c':
-                // origin: 0x4b4dc0 255 'c'
-                // [in genAWriteVariant1]
-                // !!! Hier genWrite aufgerufen.
                 break;
         }
     }
@@ -70,10 +82,10 @@ export function genReadMixedB_Variant<T>(readT: Reader<T>) {
             default: throw new Error('Invalid tag for MixedB: ' + tag);
         }
     }
-} // function genReadMixedB_Variant
+}
 
 export function genWriteMixedB<T>(writeT: Writer<T>) {
-    return function(dout: DataOut, x: MixedB<T>) {
+    return function (dout: DataOut, x: MixedB<T>) {
         switch (x.type) {
             case 'b':
                 dout.u8(0);
@@ -84,17 +96,30 @@ export function genWriteMixedB<T>(writeT: Writer<T>) {
         }
         genWriteMixedB_Variant(writeT)(dout, x);
     }
-} // Ende genWrite...
+}
 
 export function genReadMixedB<T>(readT: Reader<T>) {
     return function (din: DataIn): MixedB<T> {
         const tag = din.u8();
         return genReadMixedB_Variant(readT)(din, tag);
+    }
 }
-} // genReadMixedB
+
+
+// genRndObj:
+const rndMixedB = [
+    {
+        type:         /* RandomAttributeTypeValGen nyi */,
+        b:         /* RandomAttributeTypeValGen nyi */,
+        mixedA:         /* RandomAttributeTypeValGen nyi */,
+    },
+    {
+        type:         /* RandomAttributeTypeValGen nyi */,
+    },
+]
 
 export function genWriteMixed_Variant<T>(writeT: Writer<T>) {
-    return function(dout: DataOut, x: Mixed<T>) {
+    return function (dout: DataOut, x: Mixed<T>) {
         const writeMixedA_Variant = genWriteMixedA_Variant(writeT);
         const writeMixedB_Variant = genWriteMixedB_Variant(writeT);
 
@@ -108,21 +133,12 @@ export function genWriteMixed_Variant<T>(writeT: Writer<T>) {
             default:
                 switch (x.type) {
                     case 'a':
-                        // origin: 0x4b5150 0 MixedA
-                        // [in genAWriteVariant1]
-                        // empty template args
                         writeMixedA_Variant(dout, x);
                         break;
                     case 'b':
-                        // origin: 0x4b5280 0 MixedB
-                        // [in genAWriteVariant1]
-                        // empty template args
                         writeMixedB_Variant(dout, x);
                         break;
                     case 'c':
-                        // origin: 0x4b5280 1 MixedB
-                        // [in genAWriteVariant1]
-                        // empty template args
                         writeMixedB_Variant(dout, x);
                         break;
                 }
@@ -149,10 +165,10 @@ export function genReadMixed_Variant<T>(readT: Reader<T>) {
             default: throw new Error('Invalid tag for Mixed: ' + tag);
         }
     }
-} // function genReadMixed_Variant
+}
 
 export function genWriteMixed<T>(writeT: Writer<T>) {
-    return function(dout: DataOut, x: Mixed<T>) {
+    return function (dout: DataOut, x: Mixed<T>) {
         switch (x) {
             case 'a':
                 dout.u8(0);
@@ -175,14 +191,19 @@ export function genWriteMixed<T>(writeT: Writer<T>) {
         } // switch
         genWriteMixed_Variant(writeT)(dout, x);
     }
-} // Ende genWrite...
+}
 
 export function genReadMixed<T>(readT: Reader<T>) {
     return function (din: DataIn): Mixed<T> {
         const tag = din.u8();
         return genReadMixed_Variant(readT)(din, tag);
+    }
 }
-} // genReadMixed
+
+
+// genRndObj:
+const rndMixed = [
+]
 
 export function writeMixedInst_Variant(dout: DataOut, x: MixedInst) {
     const writeMixed_Variant = genWriteMixed_Variant(writeUtf);
@@ -197,21 +218,12 @@ export function writeMixedInst_Variant(dout: DataOut, x: MixedInst) {
         default:
             switch (x.type) {
                 case 'a':
-                    // origin: 0x4b5510 0 Mixed
-                    // [in genAWriteVariant1]
-                    // empty template args
                     writeMixed_Variant(dout, x);
                     break;
                 case 'b':
-                    // origin: 0x4b5510 1 Mixed
-                    // [in genAWriteVariant1]
-                    // empty template args
                     writeMixed_Variant(dout, x);
                     break;
                 case 'c':
-                    // origin: 0x4b5510 2 Mixed
-                    // [in genAWriteVariant1]
-                    // empty template args
                     writeMixed_Variant(dout, x);
                     break;
             }
@@ -265,6 +277,11 @@ export function readMixedInst(din: DataIn): MixedInst {
     return readMixedInst_Variant(din, tag);
 }
 
+
+// genRndObj:
+const rndMixedInst = [
+]
+
 export function writeMixedInst2_Variant(dout: DataOut, x: MixedInst2) {
     const write0 = genWriteMixed(writeUtf);
     const writeMixed_Variant = genWriteMixed_Variant(write0);
@@ -279,21 +296,12 @@ export function writeMixedInst2_Variant(dout: DataOut, x: MixedInst2) {
         default:
             switch (x.type) {
                 case 'a':
-                    // origin: 0x4b57a0 0 Mixed
-                    // [in genAWriteVariant1]
-                    // empty template args
                     writeMixed_Variant(dout, x);
                     break;
                 case 'b':
-                    // origin: 0x4b57a0 1 Mixed
-                    // [in genAWriteVariant1]
-                    // empty template args
                     writeMixed_Variant(dout, x);
                     break;
                 case 'c':
-                    // origin: 0x4b57a0 2 Mixed
-                    // [in genAWriteVariant1]
-                    // empty template args
                     writeMixed_Variant(dout, x);
                     break;
             }
@@ -348,21 +356,20 @@ export function readMixedInst2(din: DataIn): MixedInst2 {
     return readMixedInst2_Variant(din, tag);
 }
 
+
+// genRndObj:
+const rndMixedInst2 = [
+]
+
 export function genWriteSimple_Variant<T>(writeT: Writer<T>) {
-    return function(dout: DataOut, x: Simple<T>) {
+    return function (dout: DataOut, x: Simple<T>) {
 
         switch (x.type) {
             case 'a':
-                // origin: 0x4b5120 255 'a'
-                // [in genAWriteVariant1]
-                // !!! Hier genWrite aufgerufen.
                 writeU8(dout, x.x);
                 writeT(dout, x.t);
                 break;
             case 'b':
-                // origin: 0x4b5e90 255 'b'
-                // [in genAWriteVariant1]
-                // !!! Hier genWrite aufgerufen.
                 writeUtf(dout, x.error);
                 break;
         }
@@ -387,10 +394,10 @@ export function genReadSimple_Variant<T>(readT: Reader<T>) {
             default: throw new Error('Invalid tag for Simple: ' + tag);
         }
     }
-} // function genReadSimple_Variant
+}
 
 export function genWriteSimple<T>(writeT: Writer<T>) {
-    return function(dout: DataOut, x: Simple<T>) {
+    return function (dout: DataOut, x: Simple<T>) {
         switch (x.type) {
             case 'a':
                 dout.u8(0);
@@ -401,28 +408,36 @@ export function genWriteSimple<T>(writeT: Writer<T>) {
         }
         genWriteSimple_Variant(writeT)(dout, x);
     }
-} // Ende genWrite...
+}
 
 export function genReadSimple<T>(readT: Reader<T>) {
     return function (din: DataIn): Simple<T> {
         const tag = din.u8();
         return genReadSimple_Variant(readT)(din, tag);
+    }
 }
-} // genReadSimple
+
+
+// genRndObj:
+const rndSimple = [
+    {
+        type:         /* RandomAttributeTypeValGen nyi */,
+        x:         /* RandomAttributeTypeValGen nyi */,
+        t:         /* RandomAttributeTypeValGen nyi */,
+    },
+    {
+        type:         /* RandomAttributeTypeValGen nyi */,
+        error:         /* RandomAttributeTypeValGen nyi */,
+    },
+]
 
 export function writeSimple2_Variant(dout: DataOut, x: Simple2) {
 
     switch (x.type) {
         case 'a2':
-            // origin: 0x4b6100 255 'a2'
-            // [in genAWriteVariant1]
-            // !!! Hier genWrite aufgerufen.
             writeU8(dout, x.simple2);
             break;
         case 'b2':
-            // origin: 0x4b62f0 255 'b2'
-            // [in genAWriteVariant1]
-            // !!! Hier genWrite aufgerufen.
             writeU32(dout, x.simple2);
             break;
     }
@@ -462,33 +477,34 @@ export function readSimple2(din: DataIn): Simple2 {
     return readSimple2_Variant(din, tag);
 }
 
+
+// genRndObj:
+const rndSimple2 = [
+    {
+        type:         /* RandomAttributeTypeValGen nyi */,
+        simple2:         /* RandomAttributeTypeValGen nyi */,
+    },
+    {
+        type:         /* RandomAttributeTypeValGen nyi */,
+        simple2:         /* RandomAttributeTypeValGen nyi */,
+    },
+]
+
 export function writeMySynonym_Variant(dout: DataOut, x: MySynonym) {
     const write0 = genWriteSimple(writeU8);
     const writeSimple_Variant = genWriteSimple_Variant(write0);
 
     switch (x.type) {
         case 'a':
-            // origin: 0x4b6de0 0 Simple
-            // [in genAWriteVariant1]
-            // empty template args
             writeSimple_Variant(dout, x);
             break;
         case 'b':
-            // origin: 0x4b6de0 1 Simple
-            // [in genAWriteVariant1]
-            // empty template args
             writeSimple_Variant(dout, x);
             break;
         case 'a2':
-            // origin: 0x4b6f20 0 Simple2
-            // [in genAWriteVariant1]
-            // empty template args
             writeSimple2_Variant(dout, x);
             break;
         case 'b2':
-            // origin: 0x4b6f20 1 Simple2
-            // [in genAWriteVariant1]
-            // empty template args
             writeSimple2_Variant(dout, x);
             break;
     }
@@ -534,32 +550,25 @@ export function readMySynonym(din: DataIn): MySynonym {
     return readMySynonym_Variant(din, tag);
 }
 
+
+// genRndObj:
+const rndMySynonym = [
+]
+
 export function writeMySimpleSynonym_Variant(dout: DataOut, x: MySimpleSynonym) {
     const writeSimple_Variant = genWriteSimple_Variant(writeU8);
 
     switch (x.type) {
         case 'a':
-            // origin: 0x4b71a0 0 Simple
-            // [in genAWriteVariant1]
-            // empty template args
             writeSimple_Variant(dout, x);
             break;
         case 'b':
-            // origin: 0x4b71a0 1 Simple
-            // [in genAWriteVariant1]
-            // empty template args
             writeSimple_Variant(dout, x);
             break;
         case 'a2':
-            // origin: 0x4b72a0 0 Simple2
-            // [in genAWriteVariant1]
-            // empty template args
             writeSimple2_Variant(dout, x);
             break;
         case 'b2':
-            // origin: 0x4b72a0 1 Simple2
-            // [in genAWriteVariant1]
-            // empty template args
             writeSimple2_Variant(dout, x);
             break;
     }
@@ -604,9 +613,13 @@ export function readMySimpleSynonym(din: DataIn): MySimpleSynonym {
     return readMySimpleSynonym_Variant(din, tag);
 }
 
+
+// genRndObj:
+const rndMySimpleSynonym = [
+]
+
 export function writeOneLiteral_Variant(dout: DataOut, x: OneLiteral) {
 
-    // [in genAWriteVariant1]
     // Literal konstant, hier nix zu schreiben
 }
 
@@ -623,31 +636,24 @@ export function readOneLiteral(din: DataIn): OneLiteral {
     return readOneLiteral_Variant(din);
 }
 
+
+// genRndObj:
+const rndOneLiteral = [
+]
+
 export function writeOneSynonym_Variant(dout: DataOut, x: OneSynonym) {
 
     switch (x.type) {
         case 'a':
-            // origin: 0x4b7770 0 MySynonym
-            // [in genAWriteVariant1]
-            // empty template args
             writeMySynonym_Variant(dout, x);
             break;
         case 'b':
-            // origin: 0x4b7770 1 MySynonym
-            // [in genAWriteVariant1]
-            // empty template args
             writeMySynonym_Variant(dout, x);
             break;
         case 'a2':
-            // origin: 0x4b7770 2 MySynonym
-            // [in genAWriteVariant1]
-            // empty template args
             writeMySynonym_Variant(dout, x);
             break;
         case 'b2':
-            // origin: 0x4b7770 3 MySynonym
-            // [in genAWriteVariant1]
-            // empty template args
             writeMySynonym_Variant(dout, x);
             break;
     }
@@ -690,3 +696,10 @@ export function readOneSynonym(din: DataIn): OneSynonym {
     const tag = din.u8();
     return readOneSynonym_Variant(din, tag);
 }
+
+
+// genRndObj:
+const rndOneSynonym = [
+]
+
+type A = ((DataIn) | (DataOut))[]

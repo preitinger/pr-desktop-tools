@@ -13,10 +13,13 @@
             "compilerPath": "/usr/local/bin/g++",
             "cStandard": "c23",
             "cppStandard": "c++23",
-            "intelliSenseMode": "linux-clang-x64",
+            "intelliSenseMode": "${default}",
             "configurationProvider": "ms-vscode.cmake-tools",
             "compileCommands": [
                 "${workspaceFolder}/build/compile_commands.json"
+            ],
+            "compilerArgs": [
+                "-Wall"
             ]
         }
     ],

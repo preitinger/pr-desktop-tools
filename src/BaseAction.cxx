@@ -3,8 +3,8 @@
 #include <cassert>
 
 BaseAction::BaseAction(const std::weak_ptr<BaseAction> &parent)
-    : parent(parent),
-      firstMember("First member of BaseAction"),
+    : firstMember("First member of BaseAction"),
+      parent(parent),
       tidyUpTasks(),
       lastMember("Last member of BaseAction")
 {
@@ -12,8 +12,8 @@ BaseAction::BaseAction(const std::weak_ptr<BaseAction> &parent)
 }
 
 BaseAction::BaseAction(std::weak_ptr<BaseAction> &&parent)
-    : parent(std::move(parent)),
-      firstMember("First member of BaseAction"),
+    : firstMember("First member of BaseAction"),
+      parent(std::move(parent)),
       tidyUpTasks(),
       lastMember("Last member of BaseAction")
 {

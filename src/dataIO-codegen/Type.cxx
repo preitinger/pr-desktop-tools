@@ -1,7 +1,6 @@
 #include "Type.H"
 #include "Indent.H"
 #include "utils.H"
-#include <cassert>
 #include <ostream>
 #include <stack>
 #include <iostream>
@@ -11,6 +10,10 @@
 #include <ranges>
 #include <sstream>
 #include <stacktrace>
+#include <ranges>
+
+#include <cinttypes>
+#include <cassert>
 
 
 static std::string known[] = {
@@ -466,11 +469,13 @@ Literal::Literal(CSIt& it, const CSIt& end)
             assertOrNoTypeFound(it != end);
             value += *it;
             ++it;
+            assertOrNoTypeFound(it != end);
         }
         else
         {
             value += *it;
             ++it;
+            assertOrNoTypeFound(it != end);
         }
     }
     ++it; // skip final quote
@@ -494,7 +499,7 @@ bool ObjectVariant::hasTypeAttribute() const
     return false;
 }
 
-void Type::genWrite(std::ostream& out, Imports& imports, AllTypeCollections& allTypeCollections, const FuncGenerator& funcGen, const TypeOrigins& typeOrigins) const
+void Type::genWrite(Output& out, Imports& imports, AllTypeCollections& allTypeCollections, const FuncGenerator& funcGen, const TypeOrigins& typeOrigins) const
 {
     Indent indent;
 
@@ -520,8 +525,6 @@ void Type::genWrite(std::ostream& out, Imports& imports, AllTypeCollections& all
                     }
                 );
                 out << indent << "}\n";
-                // TODO
-                // assert(false);
             }
             else {
                 out << indent << "// Fall typeValues.size() <= 1 noch nicht implementiert.\n";
@@ -614,7 +617,6 @@ void Type::genWrite(std::ostream& out, Imports& imports, AllTypeCollections& all
         };
 
     if (this->templateArgs.vec.empty()) {
-        // TODO
         out << indent << "\nexport function write" << id.name << "(dout: DataOut, x: " << id.name << ") {\n";
 
         writeBody();
@@ -736,7 +738,7 @@ void Type::genWrite(std::ostream& out, Imports& imports, AllTypeCollections& all
     // out << indent << "}\n";
 }
 
-void Type::genArgDecls(std::ostream& out, bool write) const {
+void Type::genArgDecls(Output& out, bool write) const {
     templateArgs.genList(out);
     out << "(";
     auto templateArgsEnd = templateArgs.vec.end();
@@ -757,7 +759,7 @@ void Type::genArgDecls(std::ostream& out, bool write) const {
 
 }
 
-void Type::genReadVariant(std::ostream& out, Imports& imports, AllTypeCollections& allTypeCollections, const FuncGenerator& funcGen, const TypeOrigins& typeOrigins) const {
+void Type::genReadVariant(Output& out, Imports& imports, AllTypeCollections& allTypeCollections, const FuncGenerator& funcGen, const TypeOrigins& typeOrigins) const {
     Indent indent;
     const TypeCollection& ownCol = allTypeCollections.get(id.name);
     const StrVec& literals = ownCol.literals;
@@ -889,7 +891,7 @@ void Type::genReadVariant(std::ostream& out, Imports& imports, AllTypeCollection
     }
 }
 
-void Type::genRead(std::ostream& out, Imports& imports, AllTypeCollections& allTypeCollections, const FuncGenerator& funcGen, const TypeOrigins& typeOrigins) const {
+void Type::genRead(Output& out, Imports& imports, AllTypeCollections& allTypeCollections, const FuncGenerator& funcGen, const TypeOrigins& typeOrigins) const {
     const TypeCollection& ownCol = allTypeCollections.get(id.name);
     const StrVec& literals = ownCol.literals;
     const StrVec& typeValues = ownCol.typeValues;
@@ -1061,7 +1063,7 @@ void Type::genRead(std::ostream& out, Imports& imports, AllTypeCollections& allT
 }
 
 // // alt - vor Refaktorisierung
-// void Variants::genWrite(std::ostream& out, Indent& indent) const
+// void Variants::genWrite(Output& out, Indent& indent) const
 // {
 //     if (vec.size() > 1)
 //     {
@@ -1098,7 +1100,7 @@ void Type::genRead(std::ostream& out, Imports& imports, AllTypeCollections& allT
 // }
 
 // // nach Refaktorisierung durch KI:
-// void Variants::genWrite(std::ostream& out, Indent& indent, Imports& imports) const {
+// void Variants::genWrite(Output& out, Indent& indent, Imports& imports) const {
 //     if (vec.size() > 1) {
 //         out << indent << "switch (x.type) {\n";
 //         indent.sub([&]()
@@ -1130,7 +1132,7 @@ void Type::genRead(std::ostream& out, Imports& imports, AllTypeCollections& allT
 //     }
 // }
 
-void Literals::genWrite(std::ostream& out, Indent& indent) const {
+void Literals::genWrite(Output& out, Indent& indent) const {
     if (vec.size() < 2) {
         // nothing to write because no choice
     }
@@ -1159,7 +1161,7 @@ void Literals::genWrite(std::ostream& out, Indent& indent) const {
     }
 }
 
-void Literals::genRead(std::ostream& out, Indent& indent) const {
+void Literals::genRead(Output& out, Indent& indent) const {
     if (vec.size() < 2) {
         assert(vec.size() == 1);
         out << indent << "return ";
@@ -1194,7 +1196,7 @@ void Literals::genRead(std::ostream& out, Indent& indent) const {
 
 
 // alt - vor Refaktorisierung
-// void Variants::genRead(std::ostream& out, Indent& indent) const
+// void Variants::genRead(Output& out, Indent& indent) const
 // {
 //     if (vec.size() > 1)
 //     {
@@ -1235,7 +1237,7 @@ void Literals::genRead(std::ostream& out, Indent& indent) const {
 // }
 
 // // nach Refaktorisierung durch KI:
-// void Variants::genRead(std::ostream& out, Indent& indent, Imports& imports) const {
+// void Variants::genRead(Output& out, Indent& indent, Imports& imports) const {
 //     if (vec.size() > 1) {
 //         out << indent << "switch (din.u8()) {\n";
 //         indent.sub([&]() {
@@ -1259,7 +1261,7 @@ void Literals::genRead(std::ostream& out, Indent& indent) const {
 // }
 
 
-void ObjectVariant::genWrite(std::ostream& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
+void ObjectVariant::genWrite(Output& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
 {
     for (const auto& attribute : attributes.vec)
     {
@@ -1270,7 +1272,7 @@ void ObjectVariant::genWrite(std::ostream& out, Indent& indent, const FuncGenera
     }
 }
 
-void ObjectVariant::genRead(std::ostream& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
+void ObjectVariant::genRead(Output& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
 {
     out << indent << "return {\n";
     indent.sub([&]()
@@ -1284,23 +1286,23 @@ void ObjectVariant::genRead(std::ostream& out, Indent& indent, const FuncGenerat
     out << indent << "};\n";
 }
 
-void Type::genFullType(std::ostream& out) const
+void Type::genFullType(Output& out) const
 {
     out << id.name;
     templateArgs.genList(out);
 }
 
-void TemplateArg::genWriteArg(std::ostream& o) const
+void TemplateArg::genWriteArg(Output& o) const
 {
     o << "write" << this->id.name << ": Writer<" << this->id << ">";
 }
 
-void TemplateArg::genReadArg(std::ostream& o) const
+void TemplateArg::genReadArg(Output& o) const
 {
     o << "read" << this->id.name << ": Reader<" << this->id << ">";
 }
 
-void TemplateArgVec::genList(std::ostream& o) const
+void TemplateArgVec::genList(Output& o) const
 {
     if (vec.empty())
     {
@@ -1322,13 +1324,13 @@ void TemplateArgVec::genList(std::ostream& o) const
     o << ">";
 }
 
-void TemplateArg::gen(std::ostream& o) const
+void TemplateArg::gen(Output& o) const
 {
     o << id.name;
     templateArgs.genList(o);
 }
 
-void Literal::gen(std::ostream& o) const
+void Literal::gen(Output& o) const
 {
     o << quote;
     for (char c : value)
@@ -1364,7 +1366,7 @@ const Attribute* ObjectVariant::getTypeAttribute() const
 }
 
 // // Durch Refaktorisierung von KI entfernt:
-// void Variants::genWriteFunctions(std::ostream& out, Indent& indent) const
+// void Variants::genWriteFunctions(Output& out, Indent& indent) const
 // {
 //     size_t len = typeOrder.size();
 //     // std::cerr << "len " << len << std::endl;
@@ -1377,7 +1379,7 @@ const Attribute* ObjectVariant::getTypeAttribute() const
 //     }
 // }
 
-// void Variants::genWriteFunction(std::ostream& out, const TemplateArg& templateArg) const
+// void Variants::genWriteFunction(Output& out, const TemplateArg& templateArg) const
 // {
 //     out << "genWrite" << templateArg.id.name << "(";
 //     auto end = templateArg.templateArgs.vec.end();
@@ -1392,7 +1394,7 @@ const Attribute* ObjectVariant::getTypeAttribute() const
 //     out << ");\n";
 // }
 
-// void Variants::genReadFunctions(std::ostream& out, Indent& indent) const
+// void Variants::genReadFunctions(Output& out, Indent& indent) const
 // {
 //     size_t len = typeOrder.size();
 
@@ -1413,7 +1415,7 @@ const Attribute* ObjectVariant::getTypeAttribute() const
 //     }
 // }
 
-// void Variants::genFuncSuffix(std::ostream& out, const TemplateArg& type) const
+// void Variants::genFuncSuffix(Output& out, const TemplateArg& type) const
 // {
 //     auto res = this->type2idx.find(&type);
 //     if (res == type2idx.end())
@@ -1427,12 +1429,12 @@ const Attribute* ObjectVariant::getTypeAttribute() const
 //     }
 // }
 
-void Attribute::genBaseWrite(std::ostream& out, Indent& indent, const FuncGenerator& funcGen, const std::string& varName, Imports& imports) const
+void Attribute::genBaseWrite(Output& out, Indent& indent, const FuncGenerator& funcGen, const std::string& varName, Imports& imports) const
 {
     type.genBaseWrite(out, indent, funcGen, varName, imports);
 }
 
-void AttributeType::genBaseWrite(std::ostream& out, Indent& indent, const FuncGenerator& funcGen, const std::string& varName, Imports& imports) const
+void AttributeType::genBaseWrite(Output& out, Indent& indent, const FuncGenerator& funcGen, const std::string& varName, Imports& imports) const
 {
     if (baseType)
     {
@@ -1457,12 +1459,12 @@ void AttributeType::genBaseWrite(std::ostream& out, Indent& indent, const FuncGe
     }
 }
 
-void Attribute::genBaseRead(std::ostream& out, const FuncGenerator& funcGen, Imports& imports) const
+void Attribute::genBaseRead(Output& out, const FuncGenerator& funcGen, Imports& imports) const
 {
     type.genBaseRead(out, funcGen, imports);
 }
 
-void AttributeType::genBaseRead(std::ostream& out, const FuncGenerator& funcGen, Imports& imports) const
+void AttributeType::genBaseRead(Output& out, const FuncGenerator& funcGen, Imports& imports) const
 {
     if (baseType)
     {
@@ -1487,12 +1489,12 @@ void AttributeType::genBaseRead(std::ostream& out, const FuncGenerator& funcGen,
     }
 }
 
-void Attribute::genWrite(std::ostream& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
+void Attribute::genWrite(Output& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
 {
     type.genWrite(out, indent, funcGen, "x." + id.name, imports);
 }
 
-void AttributeType::genWrite(std::ostream& out, Indent& indent, const FuncGenerator& funcGen, const std::string& varName, Imports& imports) const
+void AttributeType::genWrite(Output& out, Indent& indent, const FuncGenerator& funcGen, const std::string& varName, Imports& imports) const
 {
     if (array)
     {
@@ -1510,14 +1512,14 @@ void AttributeType::genWrite(std::ostream& out, Indent& indent, const FuncGenera
     }
 }
 
-void Attribute::genRead(std::ostream& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
+void Attribute::genRead(Output& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
 {
     out << indent << this->id << ": ";
     type.genRead(out, indent, funcGen, imports);
     out << ",\n";
 }
 
-void AttributeType::genRead(std::ostream& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
+void AttributeType::genRead(Output& out, Indent& indent, const FuncGenerator& funcGen, Imports& imports) const
 {
 
     if (array)
@@ -1534,7 +1536,7 @@ void AttributeType::genRead(std::ostream& out, Indent& indent, const FuncGenerat
 }
 
 // friend
-std::ostream& operator<<(std::ostream& out, const Identifier& id)
+Output& operator<<(Output& out, const Identifier& id)
 {
     return out << id.name;
 }
@@ -1589,7 +1591,7 @@ void FuncGenerator::analyzeTemplates(std::stack<const TemplateArg*>& dfs, const 
 }
 
 // Aus Variants verschobene Methoden
-void FuncGenerator::genWriteFunctions(std::ostream& out, Indent& indent, Imports& imports) const {
+void FuncGenerator::genWriteFunctions(Output& out, Indent& indent, Imports& imports) const {
     for (size_t i = 0; i < typeOrder.size(); ++i) {
         const TemplateArg& templateArg = *typeOrder[i];
         out << indent << "const write" << i << " = ";
@@ -1608,7 +1610,7 @@ void FuncGenerator::genWriteFunctions(std::ostream& out, Indent& indent, Imports
     }
 }
 
-void FuncGenerator::genCalledFunction(std::ostream& out, const TemplateArg& templateArg, Imports& imports, const Str& prefix, const Str& argPrefix, bool variant) const {
+void FuncGenerator::genCalledFunction(Output& out, const TemplateArg& templateArg, Imports& imports, const Str& prefix, const Str& argPrefix, bool variant) const {
     out << prefix << templateArg.id.name;
     if (variant) {
         out << "_Variant";
@@ -1626,7 +1628,7 @@ void FuncGenerator::genCalledFunction(std::ostream& out, const TemplateArg& temp
     out << ");\n";
 }
 
-void FuncGenerator::genReadFunctions(std::ostream& out, Indent& indent, Imports& imports) const {
+void FuncGenerator::genReadFunctions(Output& out, Indent& indent, Imports& imports) const {
     for (size_t i = 0; i < typeOrder.size(); ++i) {
         const TemplateArg& templateArg = *typeOrder[i];
 
@@ -1660,7 +1662,7 @@ void FuncGenerator::genReadFunctions(std::ostream& out, Indent& indent, Imports&
 
 }
 
-void FuncGenerator::genFunc(std::ostream& out, const TemplateArg& type, const std::string& prefix, Imports& imports) const {
+void FuncGenerator::genFunc(Output& out, const TemplateArg& type, const std::string& prefix, Imports& imports) const {
     out << prefix;
     auto take = [&](const std::string& name)
         {
@@ -1740,7 +1742,7 @@ Imports::Imports()
 
 }
 
-void ImportsItem::genImportList(std::ostream& out, const std::string_view& importPath, const LocalNames& localNames, const Forced& forced) const
+void ImportsItem::genImportList(Output& out, const std::string_view& importPath, const LocalNames& localNames, const Forced& forced) const
 {
     // Beispiel:
     // import { ByteIn, ByteOut, genReadArray, genWriteArray, readI16, readI32, readI8, readU16, readU32, readU8, readUtf, writeI16, writeI32, writeI8, writeU16, writeU32, writeU8, writeUtf, type DataIn, type DataOut, type I16, type I32, type I8, type U16, type U32, type U8, type Utf } from "../both/byteStreams";
@@ -1917,7 +1919,7 @@ std::pair<const Variant*, int> TypeOrigins::find(const Str& typeName) const {
 }
 
 
-void Type::genWriteVariant(std::ostream& out, Imports& imports, AllTypeCollections& allTypeCollections, const FuncGenerator& funcGen, const TypeOrigins& origins) const {
+void Type::genWriteVariant(Output& out, Imports& imports, AllTypeCollections& allTypeCollections, const FuncGenerator& funcGen, const TypeOrigins& origins) const {
     const auto& typeCol = allTypeCollections.get(id.name);
     const auto& literals = typeCol.literals;
     const auto& typeValues = typeCol.typeValues;
@@ -2035,8 +2037,6 @@ void Type::genWriteVariant(std::ostream& out, Imports& imports, AllTypeCollectio
                     }
                 );
                 out << indent << "}\n";
-                // TODO
-                // assert(false);
             }
             else {
                 out << indent << "// Fall typeValues.size() <= 1 noch nicht implementiert.\n";
@@ -2110,7 +2110,6 @@ void Type::genWriteVariant(std::ostream& out, Imports& imports, AllTypeCollectio
         };
 
     if (this->templateArgs.vec.empty()) {
-        // TODO
         out << indent << "\nexport function write" << id.name << "_Variant(dout: DataOut, x: " << id.name;
         templateArgs.genList(out);
         out << ") {\n";
@@ -2198,7 +2197,8 @@ void Type::genWriteVariant(std::ostream& out, Imports& imports, AllTypeCollectio
 Str ObjectVariant::toString() const {
     const Attribute* typeAttr = getTypeAttribute();
     std::stringstream ss;
-    typeAttr->type.literal->gen(ss);
+    Output out(ss);
+    typeAttr->type.literal->gen(out);
     return ss.str();
 }
 
@@ -2270,4 +2270,270 @@ const TypeCollection& AllTypeCollections::get(const Str& typeName) {
     }
 
     return it->second;
+}
+
+class RandomAttributeBaseType;
+using RandomAttributeBaseTypePtr = std::shared_ptr<RandomAttributeBaseType>;
+
+class RandomAttributeBaseType {
+public:
+    RandomAttributeBaseType() {}
+    virtual ~RandomAttributeBaseType() {}
+    virtual int getCount() const = 0;
+    virtual void gen(Output& out, int index) const = 0;
+
+    static RandomAttributeBaseTypePtr create(const AttributeType& attributeType);
+};
+
+class RandomTemplateArg : public RandomAttributeBaseType {
+private: 
+    const TemplateArg& templateArg;
+public:
+    RandomTemplateArg(const TemplateArg& templateArg);
+    int getCount() const override;
+    void gen(Output& out, int index) const override;
+};
+
+class RandomLiteral : public RandomAttributeBaseType {
+    private:
+    const Literal& literal;
+public:
+    RandomLiteral(const Literal&);
+    int getCount() const override;
+    void gen(Output& out, int index) const override;
+};
+
+// static
+RandomAttributeBaseTypePtr RandomAttributeBaseType::create(const AttributeType& attributeType) {
+    if (attributeType.baseType) {
+        return std::make_shared<RandomTemplateArg>(*attributeType.baseType);
+    } else {
+        assert(attributeType.literal);
+        return std::make_shared<RandomLiteral>(*attributeType.literal);
+    }
+}
+
+RandomTemplateArg::RandomTemplateArg(const TemplateArg& templateArg) : templateArg(templateArg) {
+    // TODO
+}
+
+int RandomTemplateArg::getCount() const {
+    // TODO
+    return 1;
+}
+    
+void RandomTemplateArg::gen(Output& out, int index) const {
+    // TODO
+}
+
+class RandomAttributeType {
+private:
+    const AttributeType& attributeType;
+    RandomAttributeBaseTypePtr randomAttributeBaseType;
+    int count;
+
+public:
+    RandomAttributeType(const AttributeType& attributeType);
+    int getCount() const { return count; }
+    void gen(Output& out, int index) const;
+};
+
+RandomAttributeType::RandomAttributeType(const AttributeType& attributeType)
+    : attributeType(attributeType), count(1)
+{
+    // attributeType.baseType
+    // TODO
+}
+
+void RandomAttributeType::gen(Output& out, int index) const {
+    // TODO
+    out << out.indent << "/* RandomAttributeType nyi */";
+}
+
+class RandomAttribute {
+private:
+    const Attribute& attribute;
+    RandomAttributeType attributeType;
+
+public:
+    RandomAttribute(const Attribute& attr);
+    int getCount() const { return attributeType.getCount(); }
+    void gen(Output& out, int index) const;
+};
+
+RandomAttribute::RandomAttribute(const Attribute& attribute)
+    : attribute(attribute), attributeType(attribute.type)
+{
+}
+
+void RandomAttribute::gen(Output& out, int index) const {
+    out << out.indent << attribute.id << ": ";
+    attributeType.gen(out, index);
+    out << ",\n";
+}
+
+
+class RandomVariant {
+public:
+    RandomVariant() {}
+    virtual ~RandomVariant() {}
+    // RandomVariant(const RandomVariant& other) : variant(other.variant), count(other.count), next(other.next) {}
+    virtual int getCount() const = 0;
+    virtual void gen(Output& out, int index) const = 0;
+};
+
+using RandomVariantPtr = std::shared_ptr<RandomVariant>;
+
+class RandomObjectVariant : public RandomVariant {
+private:
+    const ObjectVariant& objectVariant;
+    int count;
+    std::vector<RandomAttribute> attributes;
+
+public:
+    RandomObjectVariant(const ObjectVariant& objectVariant);
+    int getCount() const override;
+    void gen(Output& out, int index) const override;
+};
+
+RandomObjectVariant::RandomObjectVariant(const ObjectVariant& objectVariant)
+    : objectVariant(objectVariant), count(1)
+{
+    std::ranges::for_each(objectVariant.attributes.vec,
+        [&](const Attribute& attribute)
+        {
+            count = std::max(count, this->attributes.emplace_back(attribute).getCount());
+        }
+    );
+}
+
+int RandomObjectVariant::getCount() const {
+    return count;
+}
+
+void RandomObjectVariant::gen(Output& out, int index) const {
+    std::ranges::for_each(attributes,
+        [&](const RandomAttribute& attribute)
+        {
+            int attrIndex = index % attribute.getCount();
+            attribute.gen(out, attrIndex);
+        }
+    );
+}
+
+class RandomType
+{
+private:
+    const Type& type;
+    int count;
+    typedef std::vector<RandomVariantPtr> Variants;
+    Variants variants;
+
+public:
+    RandomType(const Type& type);
+    ~RandomType();
+    /**
+     * @return true - if shall be called again, i.e. not yet last variant generated.
+     */
+    int getCount() const { return count; }
+    void gen(Output& out, int index) const;
+
+};
+
+RandomType::RandomType(const Type& type) : type(type), count(0), variants()
+{
+    std::ranges::for_each(type.variants,
+        [&](const VariantPtr& variant)
+        {
+            if (variant->isObjectVariant()) {
+                count += variants.emplace_back(new RandomObjectVariant(dynamic_cast<const ObjectVariant&>(*variant)))->getCount();
+            }
+        }
+    );
+}
+
+RandomType::~RandomType()
+{
+}
+
+
+void RandomType::gen(Output& out, int index) const {
+    std::size_t variantsSize = variants.size();
+    Variants::const_iterator it = variants.begin();
+    Variants::const_iterator variantsEnd = variants.end();
+
+    for (; it != variantsEnd && index >= (*it)->getCount(); ++it) {
+        index -= (*it)->getCount();
+    }
+
+    assert(it != variantsEnd && index < (*it)->getCount());
+
+    auto& variant = *it;
+    int varCount = variant->getCount();
+    int varIndex = index % varCount;
+    variant->gen(out, varIndex);
+    index /= varCount;
+}
+
+void Type::genRndObj(Output& out) const {
+    RandomType g(*this);
+    out << out.indent << "const rnd" << id << " = [\n";
+    out.sub([&]()
+        {
+            int n = g.getCount();
+            for (int i = 0; i < n; ++i) {
+                out << out.indent << "{\n";
+
+                out.sub([&]()
+                    {
+                        g.gen(out, i);
+                    }
+                );
+                out << out.indent << "},\n";
+            }
+        }
+    );
+    out << out.indent << "]\n";
+}
+
+ExampleNum::ExampleNum(const Str& name)
+    : ExampleType(name), next(0)
+{
+}
+
+ExampleNum::~ExampleNum()
+{
+}
+
+void ExampleNum::genRndVal(Output& out) {
+    out << next++;
+}
+
+
+ExampleUtf::ExampleUtf()
+    : ExampleType("Utf"), next(0)
+{
+}
+
+ExampleUtf::~ExampleUtf()
+{
+}
+
+void ExampleUtf::genRndVal(Output& out) {
+    out << "'" << next++ << "'";
+}
+
+
+
+ExampleType::ExampleType(const Str& name)
+    : name(name)
+{
+}
+
+ExampleType::~ExampleType()
+{
+}
+
+void ExampleType::genType(Output& o) {
+    o << name;
 }

@@ -55,7 +55,7 @@ template <class Widget>
 WidgetAccessSP<Widget> WidgetAccess<Widget>::create(int X, int Y, int W, int H, const char *L)
 {
     WidgetAccessImplSP<Widget> access(new WidgetAccessImpl<Widget>(L));
-    AccessedWidget<Widget> *widget = new AccessedWidget<Widget>(X, Y, W, H, L, access);
+    /* AccessedWidget<Widget> *widget = */ new AccessedWidget<Widget>(X, Y, W, H, L, access);
     return access;
 }
 

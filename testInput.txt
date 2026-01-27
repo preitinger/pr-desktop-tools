@@ -1,4 +1,7 @@
-// BEGIN IO TYPES
+interface X
+{
+    a: U8
+}
 
 interface MixedA<T> {
     type: 'a';
@@ -42,3 +45,191 @@ type MySimpleSynonym = Simple<U8> | Simple2
 
 type OneLiteral = 'oneLiteral';
 type OneSynonym = MySynonym
+
+
+type Fies<T, S> = {
+    type: 'a';
+    t: T;
+} | {
+    type: 'b';
+    t: T;
+    s: S;
+}
+
+type Fies2<T> = Fies<Fies3<T, I32, T>, T>
+
+type Fies3< T, S, R> = {
+    type: '3a';
+    t: T
+} | {
+    type: '3b';
+    t: S
+} | {
+    type: '3c';
+    r: R
+}
+
+// BEGIN IO TYPES
+
+type Fies<T, S> = {
+    type: 'a';
+    t: T;
+} | {
+    type: 'b';
+    t: T;
+    s: S;
+}
+
+type Fies2<T> = Fies<Fies3<T, I32, T>, T>
+type Fies3<T, S, R> = {
+    type: '3a';
+    t: T
+} | {
+    type: '3b';
+    s: S
+} | {
+    type: '3c';
+    r: R
+}
+
+type Fies4 = {
+    fies: Fies<I32, Utf>
+    fies2: Fies2<Utf>
+    fies3: Fies3<Fies2<I32>, Utf, I32>
+    fiesUnion: Fies2<I32> | Fies3<Utf, I32, Utf>
+}
+
+////////////////////////////////////////////////////
+
+type A = {
+    type: 'a'
+    x: B<C<D<Utf>>
+} | {
+    type: 'b'
+    x: B<C<D<I8>>
+} | {
+    type: 'c'
+    x: B<C<D<U32>>
+}
+
+_0 = D<Utf>
+_1 = C<_0>
+_2 = B<_1>
+_3 = D<I8>
+_4 = C<_3> // dies waere das gleiche wie _1, bis auf den Namen, bzw. write_4 wuerde dadurch entstehen, dass man in write_1 write_0 durch write_3 ersetzt.
+
+////////////////////////////////////////////////////
+
+Interessanter:
+type E<T> = {
+    type: 'a'
+    x: B<T, C<D<Utf, T>>>
+} | {
+    type: 'b'
+    x: B<C<D<T, T>>>
+} | {
+    type: 'c'
+    x: B<C<D<T, E<T>>>>
+} | {
+    type: 'd'
+    x: D<Utf, T>
+}
+
+type _D0<T> = D<Utf, T>
+type _C0<T> = C<_D0<T>>
+type _B0<T> = B<T, _C0<T>> = 
+
+type _D1<T> = D<T, T>
+type _C1<T> = C<_D1<T>>
+type _B1<T> = B<_C1<T>>
+
+type _D2<T> = D<T, E<T>>
+type _C2<T> = C<_D2<T>>
+type _B2<T> = B<C<D<T, E<T>>>> = B<C<_D2<T>>> = B<_C2<T>>
+
+
+const genWrite_D0<T> = (writeT) => genWriteD(writeUtf, writeT)
+const genWrite_C0<T> = (writeT) => genWriteC(genWrite_D0(writeT))
+const genWrite_B0<T> = (writeT) => genWriteB(writeT, genWrite_C0(writeT))
+
+const genWrite_D1<T> = (writeT) => genWriteD(writeT, writeT)
+const genWrite_C1<T> = (writeT) => genWriteC(genWrite_D1(writeT))
+const genWrite_B1<T> = (writeT) => genWriteB(genWrite_C1(writeT))
+
+...
+
+
+Faktorisiert:
+type E<T> = {
+    type: 'a'
+    x: _B0<T>
+} | {
+    type: 'b'
+    x: _B1<T>
+} | {
+    type: 'c'
+    x: _B2<T>
+} | {
+    type: 'd'
+    x: _D0<T>
+}
+
+function genWriteE(writeT) = {
+    return function(dout, x: E<T>) {
+        switch (x.type) {
+            case 'a': writeTag(0); genWrite_B0(writeT)(x.x); break;
+            case 'b': writeTag(1); genWrite_B1(writeT)(x.x); break;
+            case 'c': writeTag(2); genWrite_B2(writeT)(x.x); break;
+            case 'd': writeTag(3); genWrite_D0(writeT)(x.x); break;
+        }
+    }
+}
+
+
+type F<S> = {
+    type: 'f'
+    x: B<S, C<D<Utf, S>>>
+    y: C<D<Utf, S>>
+}
+
+D<Utf, S> unifizierbar mit D<Utf, T> = _D0<T> bei S/T
+          = _D0<S>
+
+C<D<Utf, S>> = C<_D0<S>> unifizierbar mit C<_D0<T>> = _C0<T>
+             = _C0<S>
+
+B<S, C<D<Utf, S>>> = B<S, _C0<S>> unifizierbar mit B<T, _C0<T>> = _B0<T>
+                   = _B0<S>
+
+
+function genWriteF(writeS) = {
+    const write__B0 = genWrite_B0(writeS)
+    const write__C0 = genWrite_C0(writeS)
+
+    return function(dout, x: F<S>) {
+        write__B0(x.x);
+        write__C0(x.y);
+    }
+}
+
+///////////////////////////
+
+type A<X> = F<X, F<X, Utf>>
+type B<X, Y> = F<Y, F<X, Utf>>
+
+// Unifikation:
+type U<X> = F<X, F<X, Utf>>
+// Damit:
+type A<X> = U<X>
+B<X, X> = U<X>
+
+// Also einfachste Gleichungen:
+type B_<X, Y> = F<Y, F<X, Utf>>
+type U<X> = B_<X, X>
+type A<X> = U<X>
+// Oder direkt:
+type _B<X, Y> = F<Y, F<X, Utf>>
+type _A<X> = _B<X, X>
+// also kann man setzen:
+const genWrite_B(writeX, writeY) = genWriteF(writeY, genWriteF(writeX, writeUtf))
+const genWrite_A(writeX) = genWrite_B(writeX, writeX)

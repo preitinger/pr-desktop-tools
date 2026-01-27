@@ -1,0 +1,3 @@
+export function writeA(dout: DataOut, x: A) {
+    // nyi: GenWriteFuncBody
+}

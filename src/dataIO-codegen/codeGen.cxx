@@ -646,6 +646,8 @@ static void usage(const char* name)
 
 int main(int argc, const char* argv[])
 {
+    // void testExampleType();
+    // testExampleType();
     bool testInput{ false }, testOutput{ false };
     bool parsedTestInput{};
     while (argc > 1 && ((parsedTestInput = !std::strcmp("-testInput", argv[1])) || !std::strcmp("-testOutput", argv[1]))) {
@@ -684,7 +686,8 @@ int main(int argc, const char* argv[])
 
     std::string input1 = testInput ? readAllFromFile("./testInput.txt") : readAllFromStdin();
     Imports imports;
-    std::stringstream funcsOut;
+    std::stringstream sFuncsOut;
+    Output funcsOut(sFuncsOut);
     AllTypes allTypes;
     std::vector<const Type*> typesInOrder; // OK Zeiger auf Werte in allTypes aufzuheben, da bis zum Programmende nichts aus allTypes geloescht wird und die Werte per Definition einer std::map auch nach dem Einfügen weiterer Einträge an der gleichen Position im Speicher bleiben.
 
@@ -777,6 +780,8 @@ int main(int argc, const char* argv[])
         type1->genReadVariant(funcsOut, imports, allTypeCollections, funcGen, typeOrigins);
         type1->genWrite(funcsOut, imports, allTypeCollections, funcGen, typeOrigins);
         type1->genRead(funcsOut, imports, allTypeCollections, funcGen, typeOrigins);
+        funcsOut << "\n\n// genRndObj:\n";
+        type1->genRndObj(funcsOut);
         // type.second.genRead(funcsOut, imports, allTypes);
     }
 
@@ -804,10 +809,10 @@ int main(int argc, const char* argv[])
         pout = testOutputStream.get();
     }
 
-    auto& out = *pout;
+    Output out(*pout);
 
     imports.other.genImportList(out, importPath, imports.localNames, imports.forced);
     // std::cout << "import * as _IM from " << importPath << ";\n\n";
-    out << funcsOut.str();
+    out << sFuncsOut.str();
     return 0;
 }

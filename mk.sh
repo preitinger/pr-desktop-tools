@@ -1,3 +1,6 @@
 #!/bin/sh
 
-cmake --build build
+set -e
+
+
+LC_ALL=C cmake --build build
